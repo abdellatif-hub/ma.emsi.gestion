@@ -14,7 +14,6 @@ Ce projet permet de gérer les étudiants, de consulter leurs notes, de calculer
 - [6. Résultats attendus](#-6-résultats-attendus)
 - [7. Installation et exécution](#-7-installation-et-exécution)
 - [8. Notions Java mobilisées](#-8-notions-java-mobilisées)
-- [9. Auteur](#-9-auteur)
 
 ---
 
