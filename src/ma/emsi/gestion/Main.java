@@ -32,7 +32,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        System.out.println("Gestion des étudiants — EMSI");
+        System.out.println("gestion des etudiants — EMSI");
         System.out.println("================================");
 
         List<Etudiant> etudiants = new ArrayList<>();
@@ -42,16 +42,16 @@ public class Main {
         etudiants.add(new Etudiant(3, "Sara", 12.5));
 
         Personne personne = etudiants.get(0);
-        System.out.println("\n--- Héritage et polymorphisme ---");
+        System.out.println("\n--- heritage et polymorphisme ---");
         System.out.println("Nom : " + personne.getNom());
-        System.out.println("Rôle : " + personne.role());
+        System.out.println("Role : " + personne.role());
 
         Evaluatable evaluatable = etudiants.get(0);
         System.out.println("\n--- Interface ---");
         System.out.println("Amina est admise : "
                 + evaluatable.estAdmis());
 
-        System.out.println("\n--- Liste des étudiants ---");
+        System.out.println("\n--- Liste des etudiants ---");
 
         double somme = 0;
 
@@ -63,13 +63,13 @@ public class Main {
         }
 
         if (etudiants.isEmpty()) {
-            System.out.println("Aucun étudiant dans la liste.");
+            System.out.println("Aucun etudiant dans la liste.");
         } else {
             double moyenne = somme / etudiants.size();
             System.out.printf("Moyenne : %.2f/20%n", moyenne);
         }
 
-        System.out.println("\n--- Étudiants admis ---");
+        System.out.println("\n--- etudiants admis ---");
 
         for (Etudiant e : etudiants) {
             if (e.estAdmis()) {
@@ -82,10 +82,10 @@ public class Main {
         Etudiant resultat = rechercherParNom(etudiants, " amina ");
 
         if (resultat != null) {
-            System.out.println("Étudiant trouvé : "
+            System.out.println("etudiant trouve : "
                     + resultat.getNom());
         } else {
-            System.out.println("Étudiant introuvable.");
+            System.out.println("etudiant introuvable.");
         }
 
         System.out.println("\n--- Gestion des exceptions ---");
@@ -93,7 +93,7 @@ public class Main {
         try {
             Etudiant invalide = new Etudiant(4, "Test", -2);
         } catch (IllegalArgumentException e) {
-            System.out.println("Erreur : " + e.getMessage());
+            System.out.println("erreur : " + e.getMessage());
         }
 
         System.out.println("\n--- HashSet ---");
@@ -117,7 +117,7 @@ public class Main {
         Etudiant etudiant2 = dictionnaire.get(2);
 
         if (etudiant2 != null) {
-            System.out.println("Étudiant ID 2 : "
+            System.out.println("etudiant ID 2 : "
                     + etudiant2.getNom());
         }
 
@@ -160,7 +160,7 @@ public class Main {
             System.out.println("Identifiant : " + id);
         } catch (NumberFormatException e) {
             System.out.println(
-                    "Erreur : l'identifiant doit être un entier."
+                    "Erreur : lidentifiant doit etre un entier."
             );
         }
 

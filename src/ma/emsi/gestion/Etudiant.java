@@ -12,7 +12,7 @@ public class Etudiant extends Personne
 
         if (id <= 0) {
             throw new IllegalArgumentException(
-                    "L'identifiant doit être positif."
+                    "lidentifiant doit etre positif."
             );
         }
 
@@ -31,7 +31,7 @@ public class Etudiant extends Personne
     public void setNote(double note) {
         if (!Double.isFinite(note) || note < 0 || note > 20) {
             throw new IllegalArgumentException(
-                    "La note doit être comprise entre 0 et 20."
+                    "La note doit etre comprise entre 0 et 20."
             );
         }
 
@@ -45,7 +45,7 @@ public class Etudiant extends Personne
 
     @Override
     public String role() {
-        return "Étudiant";
+        return "etudiant";
     }
 
     @Override
