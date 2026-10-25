@@ -201,3 +201,227 @@ Ce TP permet de réviser les notions suivantes :
 - **Tri :** `Comparable`, `Comparator` et `Collections.sort()`.
 
 Conformément aux consignes du TP, les traitements sont réalisés sans Streams ni expressions lambda.
+
+
+
+
+---
+
+# 9. TP n°2 — Programmation fonctionnelle en Java
+
+Cette partie constitue la suite du projet **Gestion des étudiants — EMSI**. Elle vise à approfondir les notions de programmation fonctionnelle en Java tout en conservant les classes et les fonctionnalités développées lors du TP n°1.
+
+Les trois premières étapes portent sur la mutabilité des objets, les fonctions pures, les interfaces fonctionnelles personnalisées et les quatre interfaces fonctionnelles standard du JDK.
+
+## 9.1. Étape 1 — Observer l’état et écrire une fonction pure
+
+### Objectif
+
+Comprendre la différence entre la modification de l’état d’un objet et l’utilisation d’une fonction pure.
+
+### Travail réalisé
+
+- Création d’un étudiant nommé Youssef avec une note initiale de 9/20.
+- Affichage de sa note initiale.
+- Modification de sa note à l’aide de la méthode `setNote(11)`.
+- Affichage de sa nouvelle note.
+- Création de la méthode statique `noteAdmise(double note)`, qui retourne `true` lorsque la note est supérieure ou égale à 10.
+- Analyse de la mutabilité de la classe `Etudiant`.
+
+La méthode `noteAdmise()` est une fonction pure : elle reçoit une note en paramètre, retourne un résultat booléen et ne modifie aucun objet.
+
+En revanche, la méthode `setNote()` permet de modifier la note après la création de l’étudiant. La classe `Etudiant` est donc mutable. Le mot-clé `final`, appliqué à une référence, empêche de réaffecter cette référence, mais ne rend pas automatiquement l’objet immuable.
+
+### Résultat obtenu
+
+```text
+Note initiale : 9.0
+Note modifiée : 11.0
+noteadmise(9) : false
+```
+
+### Capture d’écran — Étape 1
+
+<img width="2559" height="331" alt="image" src="https://github.com/user-attachments/assets/7e682079-0b92-48c3-9b04-01628f52b6bf" />
+
+## 9.2. Étape 2 — Créer une interface fonctionnelle et utiliser une expression lambda
+
+### Objectif
+
+Définir une règle d’admission modifiable sans devoir changer le code de la classe `Etudiant`.
+
+### Travail réalisé
+
+Une interface fonctionnelle nommée `RegleAdmission` est créée dans le package `ma.emsi.gestion`.
+
+Elle est annotée avec `@FunctionalInterface` et contient une seule méthode abstraite :
+
+```java
+boolean valider(Etudiant e);
+```
+
+Cette interface est utilisée de deux manières :
+
+- Une classe anonyme permet de définir une règle d’admission.
+- Une expression lambda permet de définir la même règle de manière plus concise.
+
+La méthode `verifier(Etudiant e, RegleAdmission regle)` applique la règle reçue en paramètre à un étudiant.
+
+Deux seuils d’admission sont testés : 10/20 et 12/20.
+
+
+Cette étape montre qu’une interface fonctionnelle permet de séparer la règle d’admission de la classe métier. Le seuil peut ainsi changer sans modifier la classe `Etudiant`.
+
+### Capture d’écran — Étape 2
+
+<img width="2418" height="98" alt="image" src="https://github.com/user-attachments/assets/1f2c9c34-2041-4db8-972f-03aa4cf9dc3e" />
+
+
+## 9.3. Étape 3 — Utiliser les quatre interfaces fonctionnelles standard
+
+### Objectif
+
+Découvrir les interfaces fonctionnelles du package `java.util.function` et comprendre leur utilisation pour traiter les objets étudiants.
+
+### A. Predicate<Etudiant>
+
+L’interface `Predicate<T>` permet de tester une condition et de retourner un résultat booléen.
+
+Dans ce TP, elle permet de vérifier si un étudiant est admis, en utilisant le seuil de 10/20.
+
+- Méthode utilisée : `test()`.
+- Entrée : un étudiant.
+- Résultat : `true` si l’étudiant est admis, sinon `false`.
+
+### B. Function<Etudiant, String>
+
+L’interface `Function<T, R>` permet de transformer une valeur d’entrée en une valeur de sortie.
+
+Dans ce TP, elle détermine le statut de l’étudiant :
+
+- `Admis` si sa note est supérieure ou égale à 10.
+- `Ajourné` si sa note est inférieure à 10.
+
+- Méthode utilisée : `apply()`.
+- Entrée : un étudiant.
+- Résultat : une chaîne de caractères.
+
+### C. Consumer<Etudiant>
+
+L’interface `Consumer<T>` permet d’exécuter une opération sur une valeur sans retourner de résultat.
+
+Dans ce TP, elle affiche le nom et la note de chaque étudiant.
+
+- Méthode utilisée : `accept()`.
+- Entrée : un étudiant.
+- Résultat : affichage des informations, sans valeur retournée.
+
+### D. Supplier<Etudiant>
+
+L’interface `Supplier<T>` permet de fournir une valeur sans recevoir d’argument.
+
+Dans ce TP, elle crée un nouvel étudiant nommé Omar, possédant l’identifiant 4 et une note de 14/20.
+
+- Méthode utilisée : `get()`.
+- Entrée : aucun argument.
+- Résultat : un nouvel objet `Etudiant`.
+
+### Résultats obtenus
+
+La console affiche notamment les résultats suivants :
+
+```text
+Amina : true
+Youssef : false
+Sara : true
+
+Amina : Admis
+Youssef : Ajourné
+Sara : Admis
+
+Amina : 15.0
+Youssef : 9.0
+Sara : 12.5
+
+Omar : 14.0
+```
+
+Ces résultats illustrent les quatre rôles : tester une condition, transformer une valeur, exécuter une opération d’affichage et fournir un nouvel objet.
+
+### Capture d’écran — Étape 3
+
+<img width="2405" height="659" alt="image" src="https://github.com/user-attachments/assets/f77698d5-3bcd-4186-9363-9e5072578f53" />
+
+
+## 9.4. Nouveaux fichiers du projet
+
+Les trois fichiers suivants ont été ajoutés au package `ma.emsi.gestion` :
+
+| Fichier | Description |
+|---|---|
+| `RegleAdmission.java` | Définit l’interface fonctionnelle utilisée pour valider un étudiant selon une règle d’admission. |
+| `ResultatEtudiant.java` | Prépare la représentation des résultats sous forme de `Record` pour la suite du TP. |
+| `TP2Main.java` | Contient le point d’entrée permettant d’exécuter les étapes 1, 2 et 3 du TP n°2. |
+
+La structure du projet devient :
+
+```text
+GestionEtudiants/
+├── src/
+│   └── ma/
+│       └── emsi/
+│           └── gestion/
+│               ├── Main.java
+│               ├── Personne.java
+│               ├── Etudiant.java
+│               ├── Evaluatable.java
+│               ├── RegleAdmission.java
+│               ├── ResultatEtudiant.java
+│               └── TP2Main.java
+├── .gitignore
+└── README.md
+```
+
+## 9.5. Exécution du TP n°2
+
+Pour exécuter les nouvelles fonctionnalités, il faut :
+
+1. Ouvrir le projet `GestionEtudiants` dans IntelliJ IDEA.
+2. Ouvrir le fichier `TP2Main.java`.
+3. Cliquer sur **Run** pour lancer le programme.
+4. Consulter les résultats dans la fenêtre d’exécution.
+5. Vérifier les résultats des trois étapes.
+
+L’exécution présentée dans la capture d’écran s’est terminée avec le code de sortie `0`, ce qui indique que le programme s’est terminé normalement.
+
+### Capture d’écran — Exécution complète
+
+<img width="2557" height="1340" alt="image" src="https://github.com/user-attachments/assets/30f8d9f4-0ff4-4d61-a428-9e5280ec8a76" />
+
+
+## 9.6. Bilan des notions étudiées
+
+Les trois premières étapes du TP n°2 permettent de mettre en pratique les notions suivantes :
+
+- **Mutabilité des objets :** modification de l’état d’un étudiant après sa création.
+- **Fonctions pures :** calcul d’un résultat sans modifier l’état des objets.
+- **Interfaces fonctionnelles :** définition d’un contrat contenant une seule méthode abstraite.
+- **Expressions lambda :** définition concise d’un comportement.
+- **Classes anonymes :** implémentation d’une interface sans créer une classe nommée supplémentaire.
+- **Predicate :** test d’une condition.
+- **Function :** transformation d’une valeur.
+- **Consumer :** exécution d’une opération sans retour de valeur.
+- **Supplier :** création ou fourniture d’une valeur sans argument.
+
+### Conclusion
+
+Les étapes 1, 2 et 3 du TP n°2 prolongent le travail réalisé dans le TP n°1 en introduisant les premières notions de programmation fonctionnelle.
+
+La classe `Etudiant` reste le modèle métier du projet. Les nouvelles règles de traitement sont définies séparément, ce qui facilite leur réutilisation et leur évolution.
+
+Les étapes suivantes du TP n°2 seront documentées après leur réalisation.
+
+---
+
+
+
