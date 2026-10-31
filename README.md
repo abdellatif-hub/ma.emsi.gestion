@@ -423,5 +423,175 @@ Les étapes suivantes du TP n°2 seront documentées après leur réalisation.
 
 ---
 
+# TP3 – API Stream : Gestion des étudiants
+
+**EMSI – Programmation Java – Semestre 2**
+**Package :** `ma.emsi.gestion` | **Java :** 27 (exécuté avec JDK 21) | **IDE :** VS Code / IntelliJ IDEA
+
+## 1. Présentation
+
+Ce TP prolonge le projet des TP1 et TP2 (« Programmation fonctionnelle et Records »). Les classes existantes (`Personne`, `Evaluatable`, `Etudiant`, `Main`, `RegleAdmission`, `ResultatEtudiant`, `TP2Main`) n'ont **pas été modifiées**. Seuls deux fichiers ont été ajoutés :
+
+| Fichier | Rôle |
+|---|---|
+| `AnalyseEtudiants.java` | Méthodes de traitement basées sur l'API Stream |
+| `TP3Main.java` | Programme principal : création des données et affichage des 5 étapes + défis |
+
+## 2. Jeu d'essai (seuil d'admission : 10/20)
+
+| ID | Nom | Note /20 | Situation |
+|---|---|---|---|
+| 1 | Amina | 15,0 | Admis |
+| 2 | Youssef | 9,0 | Ajourné |
+| 3 | Sara | 12,5 | Admis |
+| 4 | Omar | 14,0 | Admis |
+| 5 | Lina | 18,0 | Admis |
+| 6 | Karim | 7,5 | Ajourné |
+
+## 3. Compilation et exécution
+
+```powershell
+javac -d out src/ma/emsi/gestion/*.java
+java -cp out ma.emsi.gestion.TP3Main
+```
+
+---
+
+## 4. Étape 1 – De la boucle impérative au Stream
+
+**Objectif :** remplacer la boucle `for-each` du TP2 par un pipeline `stream().filter().forEach()` qui affiche les admis sous la forme « nom : note ».
+
+**Résultat obtenu :**
+```
+Amina : 15.0
+Sara : 12.5
+Omar : 14.0
+Lina : 18.0
+```
+
+<img width="2449" height="167" alt="1" src="https://github.com/user-attachments/assets/ca72eda9-c7ba-47b3-90b8-fcfec624f91b" />
+
+**Questions de cours :**
+- *Pourquoi `filter()` est intermédiaire et `forEach()` terminale ?* `filter()` retourne un nouveau `Stream` et s'exécute de façon paresseuse (lazy). `forEach()` produit un résultat/effet et déclenche l'exécution de tout le pipeline.
+- *Que devient le pipeline sans opération terminale ?* Il ne s'exécute pas : aucun élément n'est traité.
+
+---
+
+## 5. Étape 2 – Filtrer et transformer les données
+
+**Objectif :** filtrer les notes ≥ 10, convertir les étudiants en Records avec `map()`, collecter avec `toList()`, puis extraire les noms avec `Etudiant::getNom`.
+
+**Résultat obtenu :**
+```
+ResultatAnalyse[id=1, nom=Amina, note=15.0, admis=true]
+ResultatAnalyse[id=3, nom=Sara, note=12.5, admis=true]
+ResultatAnalyse[id=4, nom=Omar, note=14.0, admis=true]
+ResultatAnalyse[id=5, nom=Lina, note=18.0, admis=true]
+Noms des admis : [Amina, Sara, Omar, Lina]
+```
+
+<img width="2440" height="210" alt="2" src="https://github.com/user-attachments/assets/c5e19da1-81ad-4c6b-9b5b-38b51c5e0cce" />
+
+**Questions de cours :**
+- *Type avant/après `map()` ?* `Etudiant` avant, Record (`id`, `nom`, `note`, `admis`) après.
+- *Pourquoi les `Etudiant` d'origine ne sont pas modifiés ?* Le Record est un nouvel objet immuable ; `map()` crée de nouveaux éléments sans toucher à la source.
+
+---
+
+## 6. Étape 3 – Trier, classer et limiter
+
+**Objectif :** trier par note croissante puis décroissante, et extraire le top 3 avec `sorted()` et `limit(3)`, sans modifier la liste source.
+
+**Résultat obtenu :**
+```
+Notes croissantes   : [Karim : 7.5, Youssef : 9.0, Sara : 12.5, Omar : 14.0, Amina : 15.0, Lina : 18.0]
+Notes décroissantes : [Lina : 18.0, Amina : 15.0, Omar : 14.0, Sara : 12.5, Youssef : 9.0, Karim : 7.5]
+Top 3 : 1. Lina : 18.0 | 2. Amina : 15.0 | 3. Omar : 14.0
+Noms du top 3 : [Lina, Amina, Omar]
+```
+
+<img width="2435" height="172" alt="3" src="https://github.com/user-attachments/assets/42b730b8-5532-424c-aa18-e4732dfadeab" />
+
+**Questions de cours :**
+- *`sorted().limit(3)` vs `limit(3).sorted()` ?* Le premier trie tout puis garde les 3 meilleurs (correct). Le second garde les 3 premiers éléments de l'ordre initial puis les trie (résultat faux pour un classement).
+- *`sorted()` modifie-t-elle la liste d'origine ?* Non, elle produit un nouveau flux trié ; la liste source garde son ordre.
+
+---
+
+## 7. Étape 4 – Recherches et statistiques
+
+**Objectif :** obtenir un tableau de bord statistique avec `count()`, `anyMatch()`, `allMatch()`, `max()`, `mapToDouble()` et `average()`.
+
+**Résultat obtenu :**
+```
+Admis : 4 | Note >= 16 : true | Notes valides : true | Meilleur : Lina (18.0) | Moyenne : 12.67
+```
+
+<img width="2451" height="72" alt="4" src="https://github.com/user-attachments/assets/0dcd81b8-8465-47a2-b93f-7b8068d438e1" />
+
+**Questions de cours :**
+- *Pourquoi `count()` retourne un `long` ?* Un flux peut contenir plus d'éléments que la capacité d'un `int`.
+- *Pourquoi `Optional` / `OptionalDouble` ?* Le flux peut être vide : il n'existe alors ni maximum ni moyenne. `Optional` force à gérer ce cas (`orElse`, `ifPresentOrElse`).
+
+---
+
+## 8. Étape 5 – Regrouper et produire un bilan
+
+**Objectif :** séparer admis/ajournés avec `Collectors.partitioningBy()`, regrouper par niveau (Très bien ≥ 16, Admis ≥ 10 et < 16, Ajourné < 10) avec `Collectors.groupingBy()`, puis afficher un bilan.
+
+**Résultat obtenu :**
+```
+Admis : [Amina, Sara, Omar, Lina] | Ajournés : [Youssef, Karim]
+Très bien : [Lina]
+Admis : [Amina, Sara, Omar]
+Ajourné : [Youssef, Karim]
+Bilan final : total 6 | admis 4 | moyenne 12.67 | meilleur Lina | top 3 [Lina, Amina, Omar] | groupes {Très bien=[Lina], Admis=[Amina, Sara, Omar], Ajourné=[Youssef, Karim]}
+```
+
+<img width="2431" height="246" alt="5" src="https://github.com/user-attachments/assets/1bb8af10-50df-4ebe-8a35-81f6e324788b" />
+
+**Questions de cours :**
+- *Pourquoi `partitioningBy()` donne des clés `true`/`false` ?* Elle utilise un prédicat booléen : il n'y a que deux groupes possibles.
+- *Pourquoi `groupingBy()` est plus générale ?* Sa clé est calculée par une `Function` quelconque (texte, entier, énumération…), avec autant de groupes que nécessaire.
+
+---
+
+## 9. Défi A – Réduire une séquence de notes
+
+**Objectif :** calculer la somme des six notes avec `map()` + `reduce()` et comparer avec `mapToDouble().sum()`.
+
+**Résultat obtenu :**
+```
+Somme reduce : 76.0 | Somme mapToDouble : 76.0
+```
+
+<img width="2447" height="70" alt="6" src="https://github.com/user-attachments/assets/09ebace1-23d5-4ae8-8d44-1e3f40e7df5c" />
+
+Les deux méthodes donnent le même résultat (76.0).
+
+---
+
+## 10. Défi B – Aplatir plusieurs groupes
+
+**Objectif :** fusionner deux listes d'étudiants en une seule avec `flatMap(List::stream)` en conservant les six étudiants et leur ordre.
+
+**Résultat obtenu :**
+```
+Fusion (6) : [Amina, Youssef, Sara, Omar, Lina, Karim]
+```
+
+<img width="2439" height="74" alt="7" src="https://github.com/user-attachments/assets/1abd7f55-45be-426f-bf56-e291a78045b7" />
+
+---
+
+## 11. Vérification
+
+- [x] Les fichiers du TP1/TP2 sont inchangés et compilent.
+- [x] Aucune boucle `for`/`while` dans les traitements : uniquement des Streams.
+- [x] Pas de traitement parallèle, pas de bibliothèque externe.
+- [x] Les résultats des 5 étapes correspondent aux résultats attendus de l'énoncé.
+- [x] Les notes de référence restent inchangées (Youssef = 9.0).
+
+
 
 
