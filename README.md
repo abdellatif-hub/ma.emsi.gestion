@@ -592,6 +592,7 @@ Fusion (6) : [Amina, Youssef, Sara, Omar, Lina, Karim]
 - [x] Les résultats des 5 étapes correspondent aux résultats attendus de l'énoncé.
 - [x] Les notes de référence restent inchangées (Youssef = 9.0).
 
+<img width="2455" height="1066" alt="image" src="https://github.com/user-attachments/assets/ac295dfa-ebd3-4e61-a484-0e293abefa4c" />
 
 
 
